@@ -1,19 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
-    <ImageButton android:id="@+id/float_id"
+    <ImageView
+        android:id="@+id/float_id"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:background="@drawable/iconsmall"/>
+        android:padding="8dp"
+        android:background="@drawable/round_btn"
+        android:src="@mipmap/screen_shot_1"/>
+    <ImageView
+        android:id="@+id/iv_start"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:background="@drawable/round_btn"
+        android:src="@mipmap/start"/>
+    <ImageView
+        android:id="@+id/iv_stop"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:background="@drawable/round_btn"
+        android:src="@mipmap/end"/>
 
 </LinearLayout>
 
-<!-- 文件、大小、颜色、背景色
-    android:text="float"
-    android:textSize="20dp"
-    android:textColor="#ff00ff00"
-    android:background="#00ffffff"
--->
+    <!-- 文件、大小、颜色、背景色
+        android:text="float"
+        android:textSize="20dp"
+        android:textColor="#ff00ff00"
+        android:background="#00ffffff"
+    -->

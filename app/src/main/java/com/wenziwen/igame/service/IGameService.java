@@ -31,6 +31,7 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -54,7 +55,7 @@ public class IGameService extends Service {
     private WindowManager.LayoutParams wmParams = null;
     private WindowManager mWindowManager = null;
     private LayoutInflater inflater = null;
-    private ImageButton mFloatView = null;
+    private ImageView mFloatView = null;
 
     private static final String TAG = "MainActivity";
 
@@ -132,7 +133,7 @@ public class IGameService extends Service {
         inflater = LayoutInflater.from(getApplication());
         mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout, null);
         mWindowManager.addView(mFloatLayout, wmParams);
-        mFloatView = (ImageButton) mFloatLayout.findViewById(R.id.float_id);
+        mFloatView = (ImageView) mFloatLayout.findViewById(R.id.float_id);
 
         mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED), View.MeasureSpec
