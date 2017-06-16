@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.wenziwen.igame.service.IGameService;
+import com.wenziwen.igame.util.EventInject;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -38,6 +39,9 @@ public class MainActivity extends ActionBarActivity {
         //startService(intent);
 
         startIntent();
+
+        // 初始化时间注入
+        EventInject.getInstance();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

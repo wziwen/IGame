@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -39,6 +40,8 @@ import com.wenziwen.igame.R;
 import com.wenziwen.igame.ShotApplication;
 import com.wenziwen.igame.bean.ActionBean;
 import com.wenziwen.igame.image.FileUtil;
+import com.wenziwen.igame.util.EventInject;
+import com.wenziwen.igame.util.SimilarPhoto;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,6 +52,7 @@ import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class IGameService extends Service {
     private LinearLayout mFloatLayout = null;
@@ -103,7 +107,11 @@ public class IGameService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int jobType = intent.getIntExtra("jobType", 0);
+        int jobType = 0;
+        if (intent != null) {
+            jobType = intent.getIntExtra("jobType", 0);
+        }
+
         refreshJobType(jobType);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -238,6 +246,9 @@ public class IGameService extends Service {
         nameImage = pathImage + strDate + ".png";
 
         Image image = mImageReader.acquireLatestImage();
+        if (image == null) {
+            return;
+        }
         int width = image.getWidth();
         int height = image.getHeight();
         final Image.Plane[] planes = image.getPlanes();
@@ -249,11 +260,27 @@ public class IGameService extends Service {
         bitmap.copyPixelsFromBuffer(buffer);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
         image.close();
+
+        // 缩小图片
+        int scale = 2;
+        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / scale, bitmap.getHeight() / scale, false);
         Log.i(TAG, "image data captured");
+
+        Bitmap bitmapToFind = loadTargetBitmap(scale);
+
 
         if (bitmap != null) {
             try {
-                serviceJobHandler.onCapture(this, bitmap);
+                List<Rect> list = SimilarPhoto.findTarget(bitmapToFind, bitmap);
+                int x, y;
+                Log.d(TAG, "find target count: " + list.size());
+                for (Rect rect : list) {
+                    x = ((rect.left * scale) + (rect.right * scale)) / 2;
+                    y = ((rect.top * scale) + (rect.bottom * scale)) / 2;
+                    EventInject.getInstance()
+                            .tap(x, y);
+                }
+//                serviceJobHandler.onCapture(this, bitmap);
 //                ActionBean actionBean = dataList.get(currentIndex);
 //                ActionBean.Rectangle rectangle = actionBean.getTargetRectangle();
 //                int maybeWidth = (int)(rectangle.right - rectangle.left);
@@ -279,6 +306,14 @@ public class IGameService extends Service {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Bitmap loadTargetBitmap(int scale) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inSampleSize = scale;
+        Bitmap bitmap1 = BitmapFactory.decodeStream(getResources().openRawResource(R.raw.da_dishu_head), null, options);
+        return bitmap1;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
